@@ -5,9 +5,7 @@ export class Product {
     @PrimaryGeneratedColumn('uuid')
     id:string
 
-    @Column('text', {
-        unique: true,
-    })
+    @Column('text')
     title:string;
 
     @Column('float', {
