@@ -1,4 +1,4 @@
-import { IsNumber, isNumber, IsOptional, IsPositive, IsString, MinLength } from "class-validator";
+import { IsArray, IsNumber, isNumber, IsOptional, IsPositive, IsString, MinLength } from "class-validator";
 
 export class CreateProductDto {
     @IsString()
@@ -16,4 +16,9 @@ export class CreateProductDto {
     @IsString()
     @IsOptional()
     slug?: string;
+
+    @IsString({ each: true} )
+    @IsArray()
+    @IsOptional()
+    images?: string[];
 }
