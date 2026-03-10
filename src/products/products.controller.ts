@@ -27,6 +27,7 @@ export class ProductsController {
     return this.productsService.create(createProductDto, user);
   }
 
+  
   @Get()
   findAll( @Query() PaginationDto: PaginationDto) {
    

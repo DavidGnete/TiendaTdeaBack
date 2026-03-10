@@ -2,13 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInt
 import { FileService } from './file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileFilter } from './helpers/file.filter.helper';
-
+import { ApiProperty } from '@nestjs/swagger';
 
 
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
+  @ApiProperty()
   @Post('product')
   @UseInterceptors(FileInterceptor('file', {
     fileFilter: FileFilter,

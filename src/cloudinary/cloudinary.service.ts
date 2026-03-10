@@ -1,7 +1,7 @@
 import { Inject, Injectable} from '@nestjs/common';
 
-import { v2 } from 'cloudinary';
 
+import { v2 } from 'cloudinary';
 
 
 @Injectable()
