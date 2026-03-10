@@ -1,5 +1,5 @@
 import { IsBoolean, IsEmail, IsString } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 
 @Entity('users')
@@ -13,14 +13,19 @@ export class User {
     })
     email: string;
 
-    @Column('text')
+    @Column('text', {
+        select: false
+    })
     password: string;
 
     @Column('text')
-    fullNmae: string;
+    fullName: string;
+
+    @Column('text')
+    WhattsapNumber: string;
 
     @Column('bool', {
-        unique: true
+        default: true
     })
     isActive: boolean;
 
@@ -29,5 +34,12 @@ export class User {
         default: ['user']
     })
     roles: string[];
+
+    @BeforeInsert()
+    checkfileBeforeInsert(){
+        this.email = this.email.toLocaleLowerCase().trim();
+    }
+
+    
 
 }

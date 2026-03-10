@@ -131,9 +131,16 @@ async findOne(term: string) {
 
   async deleteAllProducts() {
     const query = this.productImageRepository.createQueryBuilder('product');
+    const product = this.productRepository.createQueryBuilder('product')
+
 
     try {
-      return await query
+      await query
+      .delete()
+      .where({})
+      .execute();
+
+      return await product
       .delete()
       .where({})
       .execute();
@@ -142,6 +149,7 @@ async findOne(term: string) {
       this.handleDBExceptions(error)
       
     }
+
   }
 
 

@@ -1,7 +1,7 @@
 import { IsEmail, IsNumber, IsNumberString, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 
-export class CretaUserDto {
+export class LoginUserDto {
     @IsString()
     @IsEmail()
     email: string
@@ -11,15 +11,5 @@ export class CretaUserDto {
     @MinLength(6)
     @MaxLength(50)
     password: string;
-
-    @IsString()
-    @MinLength(1)
-    fullName: string;
-
-
-    @MinLength(10)
-    @MaxLength(10)
-    @IsNumberString()
-    WhattsapNumber: string;
 
 }
