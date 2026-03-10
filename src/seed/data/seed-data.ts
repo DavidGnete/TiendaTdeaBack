@@ -1,3 +1,5 @@
+
+import * as bcrypt from 'bcrypt'
 interface SeedProducto {
     title: string;
     description: string;
@@ -14,11 +16,37 @@ interface SeedUsuario {
     productos: SeedProducto[];
 }
 
+interface SeedUser {
+    email:      string;
+    fullName:   string;
+    password:   string;
+    roles:       string[];
+    WhattsapNumber:     string;
+}
+
 interface SeedData {
+    users: SeedUser[],
     usuarios: SeedUsuario[];
 }
 
 export const initialData: SeedData = {
+
+    users: [
+        {
+            email: 'test1@gmail.com',
+            fullName: 'David123',
+            password: bcrypt.hashSync('David1234', 10),
+            roles: ['admin'],
+            WhattsapNumber: '1234567896'
+        },
+        {
+            email: 'test2@gmail.com',
+            fullName: 'Test',
+            password: bcrypt.hashSync('David', 10),
+            roles: ['user'],
+            WhattsapNumber: '1234567896'
+        }
+    ],
     usuarios: [
         {
             nombre: 'Carlos Mendoza',

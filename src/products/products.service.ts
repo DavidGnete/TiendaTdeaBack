@@ -7,6 +7,7 @@ import { PaginationDto } from '../common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
 import { title } from 'process';
 import { ProductImage, Product } from './entities';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -23,7 +24,7 @@ export class ProductsService {
   ){}
 
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
 
   try {
 
@@ -32,7 +33,8 @@ export class ProductsService {
 
     const product = this.productRepository.create({
       ...productDetails,
-      images: images.map( image => this.productImageRepository.create({url: image}))
+      images: images.map( image => this.productImageRepository.create({url: image})),
+      user,
     });
 
     await this.productRepository.save( product );
@@ -84,7 +86,7 @@ async findOne(term: string) {
   }
 
 
- async update(id: string, updateProductDto: UpdateProductDto) {
+ async update(id: string, updateProductDto: UpdateProductDto, user: User) {
 
     const product = await this.productRepository.preload({
       id: id,
@@ -95,6 +97,8 @@ async findOne(term: string) {
     if (!product) throw new NotFoundException(`Product whit ${id} not found`);
 
     try {
+      product.user = user;
+      
       this.productRepository.save ( product);
       return product;
       
