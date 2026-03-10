@@ -9,7 +9,7 @@ import { ValidRoles } from 'src/auth/interfaces';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
 import { User } from 'src/auth/entities/user.entity';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiProperty, ApiResponse } from '@nestjs/swagger';
 import { Product } from './entities';
 
 @Controller('products')
@@ -27,18 +27,20 @@ export class ProductsController {
     return this.productsService.create(createProductDto, user);
   }
 
-  
+  @ApiProperty()
   @Get()
   findAll( @Query() PaginationDto: PaginationDto) {
    
     return this.productsService.findAll(PaginationDto);
   }
 
+  @ApiProperty()
   @Get(':term')
   findOne(@Param('term') term: string) {
     return this.productsService.findOne(term);
   }
 
+  @ApiProperty()
   @Patch(':id')
   @Auth(ValidRoles.user, ValidRoles.admin)
   update(
@@ -49,6 +51,7 @@ export class ProductsController {
     return this.productsService.update(id, updateProductDto, user );
   }
 
+  @ApiProperty()
   @Delete(':id')
   @Auth(ValidRoles.user, ValidRoles.admin)
   remove(@Param('id', ParseUUIDPipe) id: string) {
