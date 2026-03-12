@@ -4,9 +4,14 @@
 
 
 # Tienda TDEA
+Clonar proyecto
+npm install
+Clonar el archivo .env.template y renombrarlo a .env
+Cambiar las variables de entorno
+Levantar la base de datos
+docker compose up -d
+Levantar: npm run start:dev
 
-1. Clonar Proyecto
-2. Instala``` npm install ```
-```
-docker-compose up -d
-```
+Ejecutar SEED
+
+http://localhost:3000/api/seed
