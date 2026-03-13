@@ -19,7 +19,6 @@ docker compose up -d
 
 7. Ejecutar SEED
 
-mensaje de prueba
 
 ```
 http://localhost:3000/api/seed
