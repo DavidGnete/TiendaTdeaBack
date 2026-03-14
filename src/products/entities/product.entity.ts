@@ -52,7 +52,7 @@ export class Product {
     slug: string;
 
 
-    @Column('text')
+    @Column('text', {nullable: true})
     WhattsapNumber: number;
 
 
