@@ -52,6 +52,10 @@ export class Product {
     slug: string;
 
 
+    @Column('text')
+    WhattsapNumber: number;
+
+
     @ApiProperty()
     @OneToMany(
         () => ProductImage,

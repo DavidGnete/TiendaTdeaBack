@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
-import { title } from 'process';
 import { ProductImage, Product } from './entities';
 import { User } from 'src/auth/entities/user.entity';
 
@@ -68,15 +67,20 @@ async findOne(term: string) {
     let product: Product | null;
 
     if ( isUUID(term) ) {
-      product = await this.productRepository.findOneBy({ id: term });
+      product = await this.productRepository.findOne({ 
+        where: {id: term },
+        relations: {images: true}
+      });
 
     }else {
       const queryBuilder = this.productRepository.createQueryBuilder('product');
       product = await queryBuilder
-      .where('UPPER(title) LIKE :title or slug LIKE :slug', {
+      .where('UPPER(product.title) LIKE :title OR product.slug LIKE :slug', {
         title:`%${term.toUpperCase()}%`,
         slug:`%${term.toLowerCase()}%`
-      }).getOne();
+      })
+      .leftJoinAndSelect('product.images', 'productImages')
+      .getOne();
     }
     
       if (!product)
@@ -86,13 +90,13 @@ async findOne(term: string) {
   }
 
 
- async update(id: string, updateProductDto: UpdateProductDto, user: User) {
+async update(id: string, updateProductDto: UpdateProductDto, user: User) {
+  const { images, ...rest } = updateProductDto;
 
-    const product = await this.productRepository.preload({
-      id: id,
-      ...updateProductDto,
-      images: []
-    });
+  const product = await this.productRepository.preload({
+    id,
+    ...rest,
+  });
 
     if (!product) throw new NotFoundException(`Product whit ${id} not found`);
 
