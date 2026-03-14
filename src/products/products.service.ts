@@ -80,6 +80,7 @@ async findOne(term: string) {
         slug:`%${term.toLowerCase()}%`
       })
       .leftJoinAndSelect('product.images', 'productImages')
+      .leftJoinAndSelect('product.user', 'user')
       .getOne();
     }
     
