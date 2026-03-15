@@ -7,8 +7,8 @@ import { SeedModule } from './seed/seed.module';
 import { FileModule } from './file/file.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AuthModule } from './auth/auth.module';
-import { EmailModule } from './email/email.module';
-import { EmailService } from './email/email.service';
+import { MailModule } from './mail/mail.module';
+import { MailService } from './mail/mail.service';
 
 @Module({
   imports: [
@@ -38,9 +38,9 @@ import { EmailService } from './email/email.service';
 
     AuthModule,
 
-    EmailModule,
+    MailModule,
   ],
-  providers: [EmailService],
+  providers: [MailService],
 
 
 })
