@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, SetMetadata, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CretaUserDto, LoginUserDto } from './dto'
 import { AuthGuard } from '@nestjs/passport';
@@ -26,6 +26,12 @@ export class AuthController {
   LoginUser(@Body() LoginUserDto: LoginUserDto) {
     return this.authService.Login( LoginUserDto);
   }
+
+    @Get('verify-email')
+  verifyEmail(@Query('token') token: string) {
+    return this.authService.verifyEmail(token);
+  }
+ 
 
   @ApiProperty()
   @Get('check-status')
