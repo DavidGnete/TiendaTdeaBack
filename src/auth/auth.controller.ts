@@ -27,11 +27,12 @@ export class AuthController {
     return this.authService.Login( LoginUserDto);
   }
 
-    @Get('verify-email')
+  // TODO: Email verification and account activation
+/*     @Get('verify-email')
   verifyEmail(@Query('token') token: string) {
     return this.authService.verifyEmail(token);
   }
- 
+  */
 
   @ApiProperty()
   @Get('check-status')

@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+/* import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { Resend } from 'resend';
 
 @Injectable()
@@ -56,4 +56,4 @@ export class MailService {
       throw new InternalServerErrorException('No se pudo enviar el email de verificación.');
     }
   }
-}
+} */

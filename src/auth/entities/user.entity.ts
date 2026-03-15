@@ -26,14 +26,14 @@ export class User {
     WhattsapNumber: string;
 
 // ------------------------------ Email verification and account activation
-    @Column('bool', {
+  /*   @Column('bool', {
         default: false
     })
     isActive: boolean;
 
 
     @Column('text', { nullable: true, select: false })
-  emailVerificationToken: string | null;
+  emailVerificationToken: string | null; */
 
 // ------------------------------
 
