@@ -25,23 +25,14 @@ export class User {
     @Column('text')
     WhattsapNumber: string;
 
-// ------------------------------ Email verification and account activation
-  /*   @Column('bool', {
-        default: false
-    })
-    isActive: boolean;
-
-
-    @Column('text', { nullable: true, select: false })
-  emailVerificationToken: string | null; */
-
-// ------------------------------
-
     @Column('text', {
         array: true,
         default: ['user']
     })
     roles: string[];
+
+    @Column('bool', { default: true })
+isActive: boolean;
 
     @OneToMany(
         () => Product,
