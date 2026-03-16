@@ -9,7 +9,7 @@ import { ValidRoles } from 'src/auth/interfaces';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
 import { User } from 'src/auth/entities/user.entity';
-import { ApiProperty, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
 import { Product } from './entities';
 
 @Controller('products')
@@ -28,7 +28,7 @@ export class ProductsController {
   }
 
   
-  @ApiProperty()
+  @ApiOperation({ summary: 'Get my products' })
   @Get('my-products')
   @Auth(ValidRoles.user, ValidRoles.admin)
     find( @Query() PaginationDto: PaginationDto,
