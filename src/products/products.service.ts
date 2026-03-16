@@ -117,20 +117,26 @@ async update(id: string, updateProductDto: UpdateProductDto, user: User) {
     ...rest,
   });
 
-    if (!product) throw new NotFoundException(`Product whit ${id} not found`);
+  if (!product) throw new NotFoundException(`Product with ${id} not found`);
 
-    try {
-      product.user = user;
-      
-      this.productRepository.save ( product);
-      return product;
-      
-    } catch (error) {
-      this.handleDBExceptions(error);
-      
+  try {
+    product.user = user;
+
+    // Si vienen imágenes nuevas, elimina las anteriores y guarda las nuevas
+    if (images) {
+      await this.productImageRepository.delete({ product: { id } });
+      product.images = images.map(
+        (url) => this.productImageRepository.create({ url })
+      );
     }
 
+    await this.productRepository.save(product);
+    return this.findOne(id);
+
+  } catch (error) {
+    this.handleDBExceptions(error);
   }
+}
 
 
 
