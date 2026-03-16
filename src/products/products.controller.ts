@@ -27,6 +27,15 @@ export class ProductsController {
     return this.productsService.create(createProductDto, user);
   }
 
+  
+  @ApiProperty()
+  @Get('my-products')
+  @Auth(ValidRoles.user, ValidRoles.admin)
+    find( @Query() PaginationDto: PaginationDto,
+    @GetUser() user: User) {
+    return this.productsService.find(user, PaginationDto);
+  }
+
   @ApiProperty()
   @Get()
   findAll( @Query() PaginationDto: PaginationDto) {
@@ -34,6 +43,7 @@ export class ProductsController {
     return this.productsService.findAll(PaginationDto);
   }
 
+  
   @ApiProperty()
   @Get(':term')
   findOne(@Param('term') term: string) {
@@ -57,4 +67,5 @@ export class ProductsController {
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove( id );
   }
+
 }

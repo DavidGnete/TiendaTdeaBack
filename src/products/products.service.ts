@@ -10,6 +10,9 @@ import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
+  activateProduct(id: string, user: User) {
+    throw new Error('Method not implemented.');
+  }
 
   private readonly logger = new Logger('ProductsService');
 
@@ -89,6 +92,21 @@ async findOne(term: string) {
 
       return product;
   }
+
+async find(user: User, PaginationDto: PaginationDto) {
+
+  const {limit = 10, offset = 0} = PaginationDto
+
+  const product = await this.productRepository.find({
+    where: {user: {id: user.id}},
+    take: limit,
+    skip: offset,
+    relations: {
+      images: true,
+    }
+  })
+  return product;
+}
 
 
 async update(id: string, updateProductDto: UpdateProductDto, user: User) {
