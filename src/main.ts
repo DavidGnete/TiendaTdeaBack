@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-  origin: ['http://localhost:3000'],
+  origin: ['http://localhost:3000','https://tienda-tdea.vercel.app'],
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true,
 });
