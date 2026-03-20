@@ -9,11 +9,12 @@ import { RoleProtected } from './decorators/role-protected/role-protected.decora
 import { ValidRoles } from './interfaces';
 import { Auth } from './decorators/auth.decorator';
 import { ApiProperty } from '@nestjs/swagger';
+import { MailService } from '../mail/mail.service';
 
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly mailService: MailService) {}
 
   @ApiProperty()
   @Post('register')
@@ -27,12 +28,12 @@ export class AuthController {
     return this.authService.Login( LoginUserDto);
   }
 
-  // TODO: Email verification and account activation
-/*     @Get('verify-email')
-  verifyEmail(@Query('token') token: string) {
-    return this.authService.verifyEmail(token);
+  @Get('send-mail')
+  async testMail(@Query('email') email: string) {
+    await this.mailService.sendVerificationEmail(email, 'token-de-prueba-123');
+    return { message: `Correo enviado a ${email}` };
   }
-  */
+
 
   @ApiProperty()
   @Get('check-status')

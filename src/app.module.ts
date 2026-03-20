@@ -7,11 +7,14 @@ import { SeedModule } from './seed/seed.module';
 import { FileModule } from './file/file.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AuthModule } from './auth/auth.module';
+import { MailModule } from './mail/mail.module';
 
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
 
     TypeOrmModule.forRoot({
       ssl: process.env.STAGE === 'prod' ? true: false,
@@ -36,6 +39,8 @@ import { AuthModule } from './auth/auth.module';
     CloudinaryModule,
 
     AuthModule,
+
+    MailModule,
 
   ],
   providers: [],
