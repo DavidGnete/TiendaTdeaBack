@@ -30,11 +30,16 @@ export class ProductsService {
 
   try {
 
+    const normalizedTitle = this.normalizeTitle(createProductDto.title);
+
     const { images = [], ...productDetails} = createProductDto
+    const slug = await this.generateUniqueSlug(productDetails.slug ?? normalizedTitle);
 
 
     const product = this.productRepository.create({
       ...productDetails,
+      title: normalizedTitle,
+      slug,
       images: images.map( image => this.productImageRepository.create({url: image})),
       user,
     });
@@ -112,6 +117,18 @@ async find(user: User, PaginationDto: PaginationDto) {
 async update(id: string, updateProductDto: UpdateProductDto, user: User) {
   const { images, ...rest } = updateProductDto;
 
+  const currentProduct = await this.productRepository.findOneBy({ id });
+  if (!currentProduct) throw new NotFoundException(`Product with ${id} not found`);
+
+  if (rest.title) {
+    rest.title = this.normalizeTitle(rest.title);
+  }
+
+  if (rest.slug || rest.title) {
+    const baseSlug = rest.slug ?? rest.title ?? currentProduct.title;
+    rest.slug = await this.generateUniqueSlug(baseSlug, id);
+  }
+
   const product = await this.productRepository.preload({
     id,
     ...rest,
@@ -160,6 +177,44 @@ async update(id: string, updateProductDto: UpdateProductDto, user: User) {
 
     this.logger.error(error)
     throw new InternalServerErrorException('unexpect error, check server logs')
+  }
+
+  private normalizeTitle(title: string) {
+    return title.trim().replace(/\s+/g, ' ');
+  }
+
+  private normalizeSlug(value: string) {
+    return value
+      .trim()
+      .toLocaleLowerCase()
+      .replace(/\s+/g, '_')
+      .replaceAll("'", '');
+  }
+
+  private async generateUniqueSlug(baseValue: string, productIdToExclude?: string) {
+    const normalizedBase = this.normalizeSlug(baseValue);
+    const baseSlug = normalizedBase.length ? normalizedBase : `product_${Date.now()}`;
+    let candidate = baseSlug;
+    let index = 2;
+
+    while (await this.slugExists(candidate, productIdToExclude)) {
+      candidate = `${baseSlug}_${index}`;
+      index++;
+    }
+
+    return candidate;
+  }
+
+  private async slugExists(slug: string, productIdToExclude?: string) {
+    const query = this.productRepository
+      .createQueryBuilder('product')
+      .where('product.slug = :slug', { slug });
+
+    if (productIdToExclude) {
+      query.andWhere('product.id != :id', { id: productIdToExclude });
+    }
+
+    return !!(await query.getOne());
   }
 
   async deleteAllProducts() {
