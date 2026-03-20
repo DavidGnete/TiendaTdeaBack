@@ -1,26 +1,14 @@
 // src/mail/mail.service.ts
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 @Injectable()
 export class MailService {
-  private transporter: nodemailer.Transporter;
+  private resend: Resend;
 
   constructor(private readonly config: ConfigService) {
-    this.transporter = nodemailer.createTransport({
-      host: this.config.get<string>('MAIL_HOST'),
-      port: this.config.get<number>('MAIL_PORT'),
-      secure: false,     // puerto 587 usa STARTTLS, no SSL directo
-      requireTLS: true,  // obliga a elevar la conexión a TLS
-      auth: {
-        user: this.config.get<string>('MAIL_USER'),
-        pass: this.config.get<string>('MAIL_PASS'),
-      },
-      tls: {
-        ciphers: 'SSLv3', // compatibilidad con Office 365
-      },
-    });
+    this.resend = new Resend(this.config.get<string>('RESEND_API_KEY'));
   }
 
   async sendVerificationEmail(to: string, token: string): Promise<void> {
@@ -28,8 +16,8 @@ export class MailService {
     const verifyUrl = `${frontendUrl}/auth/verify?token=${token}`;
 
     try {
-      await this.transporter.sendMail({
-        from: `"Marketplace TDEA" <${this.config.get('MAIL_USER')}>`,
+      await this.resend.emails.send({
+        from: 'Marketplace TDEA <onboarding@resend.dev>',
         to,
         subject: 'Confirma tu cuenta en el Marketplace',
         html: `
@@ -49,7 +37,6 @@ export class MailService {
         `,
       });
     } catch (error) {
-      // El error de nodemailer no debe exponerse al cliente
       console.error('Error enviando correo:', error);
       throw new InternalServerErrorException('No se pudo enviar el correo de verificación');
     }
