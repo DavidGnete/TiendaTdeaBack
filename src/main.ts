@@ -22,7 +22,7 @@ forbidNonWhitelisted: true,
 );
 const config = new DocumentBuilder()
     .setTitle('Tienda Tdea')
-    .setDescription('Proyecto Tienda Tdea')
+    .setDescription('Merkaplace Tienda Tdea')
     .setVersion('1.0')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
