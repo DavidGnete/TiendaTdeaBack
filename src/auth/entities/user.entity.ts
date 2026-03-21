@@ -34,6 +34,11 @@ export class User {
     @Column('bool', { default: true })
 isActive: boolean;
 
+
+    @Column('bool', { default: false })
+    isEmailVerified: boolean;
+
+
     @OneToMany(
         () => Product,
         ( product ) => product.user

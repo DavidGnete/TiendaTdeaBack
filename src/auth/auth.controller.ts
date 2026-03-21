@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, SetMetadata, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body,  UseGuards,  Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CretaUserDto, LoginUserDto } from './dto'
 import { AuthGuard } from '@nestjs/passport';
@@ -10,11 +10,15 @@ import { ValidRoles } from './interfaces';
 import { Auth } from './decorators/auth.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 import { MailService } from '../mail/mail.service';
+import { JwtService } from '@nestjs/jwt';
 
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly mailService: MailService) {}
+  constructor(private readonly authService: AuthService,
+  private readonly mailService: MailService,
+  private readonly jwtService: JwtService
+) {}
 
   @ApiProperty()
   @Post('register')
@@ -30,9 +34,23 @@ export class AuthController {
 
   @Get('send-mail')
   async testMail(@Query('email') email: string) {
-    await this.mailService.sendVerificationEmail(email, 'token-de-prueba-123');
-    return { message: `Correo enviado a ${email}` };
+  const token = this.jwtService.sign(
+    { email },
+    {
+      secret: process.env.JWT_VERIFY_SECRET,
+      expiresIn: '24h',
+    }
+  );
+  await this.mailService.sendVerificationEmail(email, token);
+  return { message: `Correo enviado a ${email}` };
   }
+
+
+
+@Get('verify')
+verifyEmail(@Query('token') token: string) {
+  return this.authService.verifyEmail(token);
+}
 
 
   @ApiProperty()

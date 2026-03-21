@@ -75,6 +75,36 @@ export class AuthService {
     return token;
 
   }
+  
+
+  // auth/auth.service.ts — agrega este método al final de la clase
+async verifyEmail(token: string) {
+  let email: string;
+
+  try {
+    // Decodifica y verifica la firma del token
+    // Si expiró o fue alterado, lanza una excepción automáticamente
+    const payload = this.jwtService.verify(token, {
+      secret: process.env.JWT_VERIFY_SECRET,
+    });
+    email = payload.email; // extrae el email que guardamos dentro del token
+  } catch {
+    throw new UnauthorizedException('El enlace es inválido o ya expiró');
+  }
+
+  const user = await this.userRepository.findOne({ where: { email } });
+
+  if (!user)
+    throw new UnauthorizedException('Usuario no encontrado');
+
+  if (user.isEmailVerified)
+    return { message: 'La cuenta ya fue verificada anteriormente' };
+
+  // Actualiza solo el campo isEmailVerified sin tocar nada más
+  await this.userRepository.update({ email }, { isEmailVerified: true });
+
+  return { message: '¡Cuenta verificada! Ya puedes iniciar sesión' };
+}
 
   private handleDBErrors( error: any) {
 
