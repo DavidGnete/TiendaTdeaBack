@@ -61,13 +61,20 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true, id: true}
+      select: { email: true,
+      password: true,
+      id: true,
+      isEmailVerified: true }
     })
     if (!user)
       throw new UnauthorizedException('Credentiales are not valid (email)');
 
     if ( !bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('Credentiales are not valid (password)');
+
+    if (!user.isEmailVerified)
+    throw new UnauthorizedException('Debes verificar tu correo antes de iniciar sesión');
+
     
     return {
       ...user,
