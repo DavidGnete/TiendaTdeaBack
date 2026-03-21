@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { MailService } from '../mail/mail.service';
 
 import * as bcrypt from 'bcrypt'
 
@@ -15,7 +16,7 @@ export class AuthService {
     constructor(
       @InjectRepository(User)
       private readonly userRepository: Repository<User>,
-
+      private readonly mailService: MailService,
       private readonly jwtService: JwtService
     ){}
 
@@ -28,13 +29,23 @@ export class AuthService {
       const user = this.userRepository.create( {
         ...userData,
         password: bcrypt.hashSync(password, 10),
+        isEmailVerified: false,
       });
 
       await this.userRepository.save ( user)
+
+       const verifyToken = this.jwtService.sign(
+      { email: user.email },
+      {
+        secret: process.env.JWT_VERIFY_SECRET,
+        expiresIn: '24h',
+      }
+    );
+
+    await this.mailService.sendVerificationEmail(user.email, verifyToken);
       
       return {
-      ...user,
-    token: this.getJwtToken({ id: user.id})};
+     message: 'Revisa tu correo para verificar tu cuenta' };
 
 
     } catch (error) {
@@ -75,7 +86,7 @@ export class AuthService {
     return token;
 
   }
-  
+
 
   // auth/auth.service.ts — agrega este método al final de la clase
 async verifyEmail(token: string) {
