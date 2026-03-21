@@ -22,10 +22,12 @@ export class AuthService {
 
 
     async create(createUserDto: CretaUserDto) {
-
-    try {
       const {password, ...userData } = createUserDto
       
+      if (!userData.email.endsWith('@correo.tdea.edu.co')) {
+      throw new BadRequestException('Solo se permiten correos @correo.tdea.edu.co');
+      }
+    try {  
       const user = this.userRepository.create( {
         ...userData,
         password: bcrypt.hashSync(password, 10),
