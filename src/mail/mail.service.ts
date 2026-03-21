@@ -9,7 +9,7 @@ export class MailService {
 
   async sendVerificationEmail(to: string, token: string): Promise<void> {
     const frontendUrl = this.config.get<string>('FRONTEND_URL');
-    const verifyUrl = `${frontendUrl}/auth/verify?token=${token}`;
+    const verifyUrl = `${frontendUrl}/verify?token=${token}`;
 
     try {
       const response = await axios.post(
